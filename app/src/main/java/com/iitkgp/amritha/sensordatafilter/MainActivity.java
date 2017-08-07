@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 SGolayFilter();
 
                 Intent i = new Intent(getApplicationContext(), GraphActivity.class);
-                i.putExtra("sensorXData", filteredXData);
+                i.putExtra("sensorXData", sensorXData);
                 i.putExtra("sensorYData", sensorYData);
 
                 i.putExtra("sensorZData", sensorZData);
