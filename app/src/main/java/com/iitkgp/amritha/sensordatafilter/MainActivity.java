@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,8 +14,6 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.iitkgp.amritha.sensordatafilter.sgfilter.SGFilter;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -28,7 +27,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     RelativeLayout layout;
 
     private ArrayList<Float> sensorXData, sensorYData, sensorZData, timeData;
-    private  double[] filteredXData;
 
     private BufferedWriter mBufferedWriter;
     private BufferedReader mBufferedReader;
@@ -42,8 +40,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
+            mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        }
         //get layout
         // layout = (RelativeLayout) findViewById(R.id.relative);
 
@@ -68,8 +68,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             @Override
             public void onClick(View v) {
-                SGolayFilter();
-
                 Intent i = new Intent(getApplicationContext(), GraphActivity.class);
                 i.putExtra("sensorXData", sensorXData);
                 i.putExtra("sensorYData", sensorYData);
@@ -102,14 +100,5 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
-    }
-
-    public void SGolayFilter() {
-        SGFilter filter = new SGFilter(5, 5);
-        double[] coefficients = SGFilter.computeSGCoefficients(5, 5, 4);
-        double array[] = new double[sensorXData.size()];
-        for (int i = 0; i < sensorXData.size(); i++)
-            array[i] = Double.parseDouble(Float.toString(sensorXData.get(0)));
-        filteredXData = filter.smooth(array, coefficients);
     }
 }
