@@ -78,11 +78,18 @@ public class GraphActivity extends AppCompatActivity {
         smooth = sgFilter.smooth(data, leftPad, new float[0], coeffs);
 
 
-        DataPoint dataPoints[] = new DataPoint[smooth.length];//filteredXData.length];
+        DataPoint dataPoints[] = new DataPoint[floatPointList.size()];//filteredXData.length];
+        for (int i = 0; i < floatPointList.size(); i++) {
+            DataPoint point = new DataPoint(i, floatPointList.get(i));
+            dataPoints[i] = point;
+        }
+
+
+        /*DataPoint dataPoints[] = new DataPoint[smooth.length];//filteredXData.length];
         for (int i = 0; i < smooth.length; i++) {
             DataPoint point = new DataPoint(i, smooth[i]);
             dataPoints[i] = point;
-        }
+        }*/
 
         GraphView graph = (GraphView) findViewById(R.id.graph);
         LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(dataPoints);
